@@ -1,15 +1,14 @@
 package routes
 
 import (
-	"LPKNI/lpkni_project/controllers"
+	"LPKNI/lpkniService/controllers"
 
 	"github.com/gin-gonic/gin"
 )
 
-func UserRoutes(router *gin.Engine) {
-	router.POST("/users/register", controllers.RegisterUser)
-	router.POST("/users/login", controllers.LoginUser)
-	router.GET("/users/:id", controllers.GetUserByID)
-	router.GET("/users", controllers.GetAllUsers)
-	router.PUT("users/update", controllers.UpdateUserProfile)
+func userRoutes(api *gin.RouterGroup) {
+	api.POST("/user", controllers.CreateUser)       // Create User
+	api.GET("/user/:id", controllers.GetUserById)   // Get User by ID
+	api.PUT("/user/:id", controllers.UpdateUser)    // Update User
+	api.DELETE("/user/:id", controllers.DeleteUser) // Delete User
 }

@@ -4,20 +4,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRouter() *gin.Engine {
-	router := gin.Default()
+func SetupRoutes(router *gin.Engine) {
+	router.Use(gin.Logger())
+	router.Use(gin.Recovery())
 
-	UserRoutes(router)
-	AnggotaRoutes(router)
-	NewsRoutes(router)
-	KeuanganRoutes(router)
-	AduanRoutes(router)
-	TiketRoutes(router)
-	ResponRoutes(router)
-	SponsorRoutes(router)
-	PiutangRoutes(router)
-	AdminRoutes(router)
-	PendaftaranRoutes(router)
+	protected := router.Group("/api")
 
-	return router
+	userRoutes(protected)
+	daerah(protected)
+	wilayah(protected)
+	// router.POST("/api/login", controllers.Login)
+	router.Static("/uploads", "./uploads")
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "Welcome to the Apotek Management API!",
+		})
+	})
 }

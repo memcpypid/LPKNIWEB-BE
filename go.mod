@@ -1,4 +1,4 @@
-module LPKNI/lpkni_project
+module LPKNI/lpkniService
 
 go 1.23.3
 

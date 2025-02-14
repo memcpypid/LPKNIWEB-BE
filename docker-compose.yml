@@ -3,10 +3,10 @@ version: '3.8'
 services:
   db:
     image: mysql:8
-    container_name: mysql-lpkni-project
+    container_name: lpkniweb-DB
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: lpkni-project
+      MYSQL_DATABASE: lpkni_web_db
     ports:
       - "3306:3306"
     volumes:

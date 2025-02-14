@@ -1,48 +1,43 @@
 package main
 
 import (
-	"LPKNI/lpkni_project/config"
-	"LPKNI/lpkni_project/routes"
+	"LPKNI/lpkniService/config"
+	"LPKNI/lpkniService/routes"
 	"log"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
-func main() {
-	// Koneksi ke database
-	config.ConnectDatabase()
-
-	// Inisialisasi router Gin
-	r := gin.Default()
-	routes.PendaftaranRoutes(r)
-
-
-	// Middleware CORS
-	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:8080"}, // Ubah sesuai domain frontend
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Content-Type", "Authorization"},
-		ExposeHeaders:    []string{"Content-Length"},
+func CheckDatabaseMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if config.DB == nil {
+			c.JSON(500, gin.H{"error": "Database is not connected"})
+			c.Abort()
+			return
+		}
+		c.Next()
+	}
+}
+func setupRouter() *gin.Engine {
+	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		AllowCredentials: true,
 	}))
+	router.Use(gin.Recovery())
+	routes.SetupRoutes(router)
+	return router
+}
 
-	// Tambahkan pesan selamat datang di root endpoint
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "Selamat datang di sistem LPKNI",
-		})
-	})
-
-	// Tambahkan rute untuk API pengguna
-	routes.UserRoutes(r)
-r.Static("uploads","./uploads")
-	// **Tambahkan rute untuk API berita**
-	routes.NewsRoutes(r) // <-- Ini yang hilang
-
-	// Jalankan server
-	log.Println("Server berjalan di port 5000")
+func main() {
+	// gin.SetMode(gin.ReleaseMode)
+	config.ConnectDB()
+	r := setupRouter()
+	r.Use(CheckDatabaseMiddleware())
 	if err := r.Run(":3000"); err != nil {
-		log.Fatal("Server gagal dijalankan: ", err)
+		log.Fatalf("Failed to run server: %v", err)
 	}
 }

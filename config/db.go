@@ -1,7 +1,7 @@
 package config
 
 import (
-	"LPKNI/lpkni_project/models"
+	"LPKNI/lpkniService/models"
 	"fmt"
 	"log"
 
@@ -11,9 +11,9 @@ import (
 
 var DB *gorm.DB
 
-func ConnectDatabase() {
+func ConnectDB() {
 
-	dsn := "root:password@tcp(127.0.0.1:3306)/lpkni-project?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:password@tcp(127.0.0.1:3306)/lpkni_web_db?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Koneksi ke database gagal: ", err)
@@ -23,8 +23,14 @@ func ConnectDatabase() {
 	if err := db.AutoMigrate(
 
 		&models.User{},
-		&models.Pendaftaran{},
-		&models.News{},
+		&models.DataUser{},
+		&models.Wilayah{},
+		&models.Daerah{},
+		&models.ImageUser{},
+		&models.Berita{},
+		&models.MediaBerita{},
+		&models.KategoriBerita{},
+		
 
 	); err != nil {
 		log.Fatalf("Gagal melakukan migrasi: %v", err)
