@@ -48,7 +48,6 @@ func CreateDaerah(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": newDaerah})
 }
 
-
 // Get All Daerah
 func GetAllDaerah(c *gin.Context) {
 	var daerah []models.Daerah
@@ -70,6 +69,16 @@ func GetDaerahByID(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": daerah})
+}
+func GetDaerahByIDWilayah(c *gin.Context) {
+	id := c.Param("id")
+	var daerah []models.Daerah
+	if result := config.DB.Preload("Wilayah").Where("wilayah_id = ?", id).Find(&daerah); result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Daerah not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, daerah)
 }
 
 // Update Daerah

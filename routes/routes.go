@@ -1,6 +1,9 @@
 package routes
 
 import (
+	"LPKNI/lpkniService/handlers"
+	"LPKNI/lpkniService/middleware"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,9 +14,27 @@ func SetupRoutes(router *gin.Engine) {
 	protected := router.Group("/api")
 
 	userRoutes(protected)
-	daerah(protected)
-	wilayah(protected)
-	// router.POST("/api/login", controllers.Login)
+	Daerah(protected)
+	Wilayah(protected)
+	Berita(protected)
+	Pengaduan(protected)
+
+	Jabatan(protected)
+	protected.Use(middleware.VerifyJWT())
+	{
+		// Contoh rute yang dilindungi
+		protected.GET("/profile", func(c *gin.Context) {
+			user, _ := c.Get("user")
+			akun, _ := c.Get("data_anggota")
+			c.JSON(200, gin.H{
+				"user":         user,
+				"data_anggota": akun,
+			})
+		})
+		DatauserRoutes(protected)
+	}
+	router.POST("/api/auth/login", handlers.Login)
+	router.POST("/api/auth/logout", handlers.Logout)
 	router.Static("/uploads", "./uploads")
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{

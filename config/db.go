@@ -21,17 +21,17 @@ func ConnectDB() {
 		fmt.Println("Berhasil terhubung ke database")
 	}
 	if err := db.AutoMigrate(
-
-		&models.User{},
-		&models.DataUser{},
+		&models.AkunAnggota{},
+		&models.DataAnggota{},
 		&models.Wilayah{},
 		&models.Daerah{},
-		&models.ImageUser{},
+		&models.ImageDataAnggota{},
 		&models.Berita{},
 		&models.MediaBerita{},
 		&models.KategoriBerita{},
-		
-
+		&models.PengaduanKonsumen{},
+		&models.MediaPengaduan{},
+		&models.SessionLogin{},
 	); err != nil {
 		log.Fatalf("Gagal melakukan migrasi: %v", err)
 	}
